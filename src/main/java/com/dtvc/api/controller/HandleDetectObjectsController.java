@@ -3,8 +3,11 @@ package com.dtvc.api.controller;
 import com.dtvc.api.location.HelmetLocation;
 import com.dtvc.api.location.MotorbikeLocation;
 import com.dtvc.api.location.PersonLocation;
+import com.dtvc.api.location.TrafficLight;
 import com.dtvc.api.service.HelmetService;
+import com.dtvc.api.service.MotorbikeService;
 import com.dtvc.api.service.PersonAndMotorbikeService;
+import com.dtvc.api.service.TrafficLightService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +28,12 @@ public class HandleDetectObjectsController {
     private HelmetService helmetService;
 
     @Autowired
+    private TrafficLightService trafficLightService;
+
+    @Autowired
+    private MotorbikeService motorbikeService;
+
+    @Autowired
     private PersonAndMotorbikeService personAndMotorbikeService;
 
     @PostMapping("/object")
@@ -37,7 +46,8 @@ public class HandleDetectObjectsController {
             CompletableFuture.allOf(helmetLocationListString).join();
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-            List<HelmetLocation> helmetLocationList = objectMapper.readValue(helmetLocationListString.get(), new TypeReference<List<HelmetLocation>>(){});
+            List<HelmetLocation> helmetLocationList = objectMapper.readValue(helmetLocationListString.get(), new TypeReference<List<HelmetLocation>>() {
+            });
 //            personAndMotorbikeListString = personAndMotorbikeService.getListPersonAndMotorbikeLocation(imageBase64);
 //            CompletableFuture.allOf(personAndMotorbikeListString).join();
 //            ObjectMapper objectMapper = new ObjectMapper();
@@ -67,5 +77,50 @@ public class HandleDetectObjectsController {
     @GetMapping("/object")
     public String helloWorld() {
         return "hello world";
+    }
+
+    @GetMapping("/objectV2")
+    public String callDetectObjectsApiV2(@RequestBody Map<String, String> imageBase64) {
+        String result = "Not violated";
+        CompletableFuture<String> personAndMotorbikeListString = null;
+        try {
+            personAndMotorbikeListString = personAndMotorbikeService.getListPersonAndMotorbikeLocation(imageBase64);
+            CompletableFuture.allOf(personAndMotorbikeListString).join();
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+            Map<String, Object> jsonMap = objectMapper.readValue(personAndMotorbikeListString.get(),
+                    new TypeReference<Map<String, Object>>() {
+                    });
+            Iterator jsonMapIterator = jsonMap.entrySet().iterator();
+            List<PersonLocation> persons = new ArrayList<>();
+            List<MotorbikeLocation> motorbikes = new ArrayList<>();
+            List<TrafficLight> lights = new ArrayList<>();
+            while (jsonMapIterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) jsonMapIterator.next();
+                if (String.valueOf(entry.getKey()).contains("person")) {
+                    persons.add(objectMapper.convertValue(entry.getValue(), PersonLocation.class));
+                } else if (String.valueOf(entry.getKey()).contains("motorbike")) {
+                    motorbikes.add(objectMapper.convertValue(entry.getValue(), MotorbikeLocation.class));
+                    System.out.println(entry.getValue());
+                } else if (String.valueOf(entry.getKey()).contains("traffic-light")) {
+                    System.out.println(entry.getValue());
+                    lights.add(objectMapper.convertValue(entry.getValue(), TrafficLight.class));
+                }
+            }
+            boolean isRed = trafficLightService.isRed(lights);
+            if (isRed) {
+//              The position of crossing line
+//              [x1, x2, y1, y2] line
+                int[] line = {18, 303, 188, 192};
+                int rate = 0;
+                int count = motorbikeService.detectPassingRedLight(motorbikes, line, rate);
+                if (count > 0) {
+                    result = "There are " + count + " red light passing violations";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
