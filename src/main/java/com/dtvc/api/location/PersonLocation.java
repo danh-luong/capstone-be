@@ -7,11 +7,7 @@ import org.springframework.stereotype.Component;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @Component
-public class PersonLocation {
+public class PersonLocation extends ObjectLocation {
 
-    private int left;
-    private int top;
-    private int right;
-    private int bottom;
-
+    private int id;
 }
