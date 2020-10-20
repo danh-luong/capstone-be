@@ -1,6 +1,6 @@
 package com.dtvc.api.controller;
 
-import com.dtvc.api.algorithm.WearingHelmetAlgorithm;
+import com.dtvc.api.algorithm.WearingHelmet;
 import com.dtvc.api.location.HelmetLocation;
 import com.dtvc.api.location.MotorbikeLocation;
 import com.dtvc.api.location.PersonLocation;
@@ -77,6 +77,9 @@ public class HandleDetectObjectsController {
                     helmetLocationList.add(objectMapper.convertValue(pair.getValue(), HelmetLocation.class));
                 }
             }
+
+            //Match PersonLocation and MotorbikeLocation
+            Map<PersonLocation, MotorbikeLocation> personLocationMotorbikeLocationMap = new WearingHelmet().isRelatedPersonAndMotorbike(motorbikeLocationList, personLocationList);
             boolean isRed = trafficLightService.isRed(lights);
             if (isRed) {
 //              The position of crossing line
@@ -97,6 +100,8 @@ public class HandleDetectObjectsController {
                 List<PersonLocation> matchedPersonMotorbike = new ArrayList<PersonLocation>(personLocationMotorbikeLocationMap.keySet());
 
                 //Match map HelmetLocation and MotorbikeLocation with HelmetLocation
+                Map<PersonLocation, HelmetLocation> matchedPersonWithHelmetMap = new WearingHelmet().isRelatedPersonAndHelmet(matchedPersonMotorbike, helmetLocationList);
+                //Match map HelmetLocation and MotorbikeLocation with HelmetLocation
                 Map<PersonLocation, HelmetLocation> matchedPersonWithHelmetMap = new WearingHelmetAlgorithm().isRelatedPersonAndHelmet(matchedPersonMotorbike, helmetLocationList);
 
                 //Get List PersonLocation and MotorbikeLocation base on HelmetLocation
@@ -105,15 +110,15 @@ public class HandleDetectObjectsController {
                 //Check isWearingHelmet or Not
                 Map<PersonLocation, MotorbikeLocation> notWearingHelmet = new HashMap<>();
                 int countNotHelmet = 0;
-                for(PersonLocation entry: matchedPersonWithHelmetMap.keySet()){
+                for (PersonLocation entry : matchedPersonWithHelmetMap.keySet()) {
                     System.out.println("4 left: " + entry.getLeft() + " | right: " + entry.getRight()
                             + " | top: " + entry.getTop() + " | bottom: " + entry.getBottom());
                     System.out.println("5 left: " + matchedPersonWithHelmetMap.get(entry).getLeft() + " | right: " + matchedPersonWithHelmetMap.get(entry).getRight()
                             + " | top: " + matchedPersonWithHelmetMap.get(entry).getTop() + " | bottom: " + matchedPersonWithHelmetMap.get(entry).getBottom());
 
                 }
-                System.out.println("size:"+ matchedPersonWithHelmetMap.size());
-                System.out.println("size 2:"+ matchedPersonMotorbike.size());
+                System.out.println("size:" + matchedPersonWithHelmetMap.size());
+                System.out.println("size 2:" + matchedPersonMotorbike.size());
                 if (matchedPersonMotorbike.size() != matchedPersonHelmetList.size()) {
                     System.out.println("aaaaaaa");
                     for (int i = 0; i < matchedPersonMotorbike.size(); i++) {
