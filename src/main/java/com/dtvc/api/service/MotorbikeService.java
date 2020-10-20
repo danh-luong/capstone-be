@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface MotorbikeService {
 
-    int detectPassingRedLight(List<MotorbikeLocation> list, int[] line, int rate);
+    int detectPassingRedLight(List<MotorbikeLocation> list, int[] line, float rate, int laneDistance);
 }

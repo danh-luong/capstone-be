@@ -5,9 +5,11 @@ import com.dtvc.api.location.MotorbikeLocation;
 import com.dtvc.api.location.PersonLocation;
 import com.dtvc.api.location.TrafficLight;
 import com.dtvc.api.service.HelmetService;
+import com.dtvc.api.service.LaneService;
 import com.dtvc.api.service.MotorbikeService;
-import com.dtvc.api.service.PersonAndMotorbikeService;
 import com.dtvc.api.service.TrafficLightService;
+import com.dtvc.api.service.PersonAndMotorbikeService;
+import com.dtvc.api.util.Constants;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +31,9 @@ public class HandleDetectObjectsController {
 
     @Autowired
     private TrafficLightService trafficLightService;
+
+    @Autowired
+    private LaneService laneService;
 
     @Autowired
     private MotorbikeService motorbikeService;
@@ -101,9 +106,7 @@ public class HandleDetectObjectsController {
                     persons.add(objectMapper.convertValue(entry.getValue(), PersonLocation.class));
                 } else if (String.valueOf(entry.getKey()).contains("motorbike")) {
                     motorbikes.add(objectMapper.convertValue(entry.getValue(), MotorbikeLocation.class));
-                    System.out.println(entry.getValue());
                 } else if (String.valueOf(entry.getKey()).contains("traffic-light")) {
-                    System.out.println(entry.getValue());
                     lights.add(objectMapper.convertValue(entry.getValue(), TrafficLight.class));
                 }
             }
@@ -112,8 +115,11 @@ public class HandleDetectObjectsController {
 //              The position of crossing line
 //              [x1, x2, y1, y2] line
                 int[] line = {18, 303, 188, 192};
-                int rate = 0;
-                int count = motorbikeService.detectPassingRedLight(motorbikes, line, rate);
+                int[] lane = {18, 303, 100, 132};
+//                calculate distance from line to lane
+                int laneDistance = laneService.calculateDistance(line, lane);
+                System.out.println("lane: "+ laneDistance);
+                int count = motorbikeService.detectPassingRedLight(motorbikes, line, Constants.LANE_RATE, laneDistance);
                 if (count > 0) {
                     result = "There are " + count + " red light passing violations";
                 }

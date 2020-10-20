@@ -12,7 +12,7 @@ public class MotorbikeServiceImp implements MotorbikeService {
     //    [left, right, top, bottom] moto
     //    [x1, x2, y1, y2] line
     @Override
-    public int detectPassingRedLight(List<MotorbikeLocation> list, int[] line, int rate) {
+    public int detectPassingRedLight(List<MotorbikeLocation> list, int[] line, float acceptanceRate, int laneDistance) {
         int count = 0;
         for (MotorbikeLocation motorbike : list) {
 //            System.out.println("left: " + motorbike.getLeft() + " | right: " + motorbike.getRight()
@@ -27,7 +27,8 @@ public class MotorbikeServiceImp implements MotorbikeService {
                 }
                 if (motorbike.getBottom() < top) {
                     int distance = top - motorbike.getBottom();
-                    if (distance > rate) {
+                    float rate = distance * 100 / laneDistance;
+                    if (rate > acceptanceRate) {
                         count++;
                     }
                 }
