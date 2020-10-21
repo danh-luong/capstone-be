@@ -7,10 +7,5 @@ import org.springframework.stereotype.Component;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @Component
-public class MotorbikeLocation {
-
-    private int left;
-    private int top;
-    private int right;
-    private int bottom;
+public class MotorbikeLocation extends ObjectLocation {
 }

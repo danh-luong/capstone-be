@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class HelmetService {
 
-    private static final String helmetApi = "http://127.0.0.1:5000/detect_image";
+    private static final String helmetApi = "http://127.0.0.1:5001/detect_image";
 
     private final RestTemplate restTemplate;
 
