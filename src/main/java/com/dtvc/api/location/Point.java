@@ -20,7 +20,7 @@ public class Point {
         return Math.sqrt((this.x - point.x) * (this.x - point.x) + (this.y - point.y) * (this.y - point.y));
     }
 
-    public static Point lineLineIntersection(Point A, Point B, Point C, Point D)
+    public static Point pointIntersection(Point A, Point B, Point C, Point D)
     {
         // Line AB represented as a1x + b1y = c1
         double a1 = B.y - A.y;

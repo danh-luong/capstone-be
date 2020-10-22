@@ -34,7 +34,7 @@ public class EncroachingDetection {
             targetDistance = leftUpLine.calculateDistance(rightUpLine);
             
             // intersection of upper line and marker line
-            Point intersect1 = Point.lineLineIntersection(upperMarker, lowerMarker, leftUpLine, rightUpLine);
+            Point intersect1 = Point.pointIntersection(upperMarker, lowerMarker, leftUpLine, rightUpLine);
             if (intersect1.getX() == Double.MAX_VALUE &&
                     intersect1.getY() == Double.MAX_VALUE)
             {
@@ -49,7 +49,7 @@ public class EncroachingDetection {
             Point rightLowLine = new Point(motorbike.getRight(), motorbike.getBottom());
 
             // intersection of lower line and marker line
-            Point intersect2 = Point.lineLineIntersection(upperMarker, lowerMarker, leftLowLine, rightLowLine);
+            Point intersect2 = Point.pointIntersection(upperMarker, lowerMarker, leftLowLine, rightLowLine);
 
             if (intersect2.getX() == Double.MAX_VALUE &&
                     intersect2.getY() == Double.MAX_VALUE)
