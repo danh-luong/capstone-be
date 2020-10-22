@@ -28,6 +28,7 @@ public class MotorbikeServiceImp implements MotorbikeService {
                 if (motorbike.getBottom() < top) {
                     int distance = top - motorbike.getBottom();
                     float rate = distance * 100 / laneDistance;
+                    System.out.println("rate: "+ rate);
                     if (rate > acceptanceRate) {
                         count++;
                     }

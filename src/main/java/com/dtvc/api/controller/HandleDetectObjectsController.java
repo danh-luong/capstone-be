@@ -54,7 +54,7 @@ public class HandleDetectObjectsController {
         long start = System.currentTimeMillis();
         CompletableFuture<String> helmetLocationListString = null;
         CompletableFuture<String> personAndMotorbikeListString = null;
-        String result = "Not violated";
+        String result = "";
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
@@ -87,8 +87,8 @@ public class HandleDetectObjectsController {
             if (isRed) {
 //              The position of crossing line
 //              [x1, x2, y1, y2] line
-                int[] line = {18, 303, 188, 192};
-                int[] lane = {18, 303, 100, 132};
+                int[] line = {462, 1000, 468, 450};
+                int[] lane = {462, 1000, 200, 230};
 //                calculate distance from line to lane
                 int laneDistance = laneService.calculateDistance(line, lane);
                 System.out.println("lane: " + laneDistance);
@@ -120,7 +120,12 @@ public class HandleDetectObjectsController {
                         }
                     }
                 }
-                result += "\nThere are " + countNotHelmet + " cases of violation without wearing a helmet";
+                if (countNotHelmet > 0) {
+                    result += "\nThere are " + countNotHelmet + " cases of violation without wearing a helmet";
+                }
+            }
+            if (result.isEmpty()) {
+                result = "Not violation";
             }
         } catch (Exception e) {
             e.printStackTrace();
