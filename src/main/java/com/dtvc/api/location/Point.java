@@ -1,20 +1,18 @@
 package com.dtvc.api.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class Point {
     double x,y;
-
-    public Point(double x, double y)
-    {
-        this.x = x;
-        this.y = y;
-    }
 
     public double calculateDistance(Point point) {
         return Math.sqrt((this.x - point.x) * (this.x - point.x) + (this.y - point.y) * (this.y - point.y));
