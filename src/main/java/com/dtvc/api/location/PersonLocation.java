@@ -11,5 +11,8 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PersonLocation  extends ObjectLocation{
+public class PersonLocation extends ObjectLocation {
+
+    private int id;
+
 }
