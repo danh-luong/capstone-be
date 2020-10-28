@@ -1,10 +1,18 @@
 package com.dtvc.api.location;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-@Data
 @Component
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ObjectLocation {
     private int left;
     private int top;

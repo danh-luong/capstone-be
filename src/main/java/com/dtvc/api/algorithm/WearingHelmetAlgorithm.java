@@ -117,6 +117,12 @@ public class WearingHelmetAlgorithm {
                     //trả về 100% ko tính IoU
                     listMap.put(personLocationList.get(j), motorbikeLocationList.get(i));
                     System.out.println("case 5");
+                    MotorbikeLocation motorbike = motorbikeLocationList.get(i);
+                    PersonLocation personLocation = personLocationList.get(j);
+                    System.out.println("2 left: " + motorbike.getLeft() + " | right: " + motorbike.getRight()
+                            + " | top: " + motorbike.getTop() + " | bottom: " + motorbike.getBottom());
+                    System.out.println("3 left: " + personLocation.getLeft() + " | right: " + personLocation.getRight()
+                            + " | top: " + personLocation.getTop() + " | bottom: " + personLocation.getBottom());
                     break;
                 }
             }
