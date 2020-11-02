@@ -94,7 +94,7 @@ public class HandleDetectObjectsController {
                     result = "There are " + count + " cases of red light violation";
                 }
                 //Match PersonLocation and MotorbikeLocation
-                Map<PersonLocation, MotorbikeLocation> personLocationMotorbikeLocationMap = new WearingHelmetAlgorithm().isRelatedPersonAndMotorbike(motorbikeLocationList, personLocationList);
+//                Map<PersonLocation, MotorbikeLocation> personLocationMotorbikeLocationMap = new WearingHelmetAlgorithm().isRelatedPersonAndMotorbike(motorbikeLocationList, personLocationList);
 
                 //Get all PersonLocation base on Motorbike
                 List<PersonLocation> matchedPersonMotorbike = new ArrayList<PersonLocation>(personLocationMotorbikeLocationMap.keySet());
@@ -102,7 +102,7 @@ public class HandleDetectObjectsController {
                 //Match map HelmetLocation and MotorbikeLocation with HelmetLocation
                 Map<PersonLocation, HelmetLocation> matchedPersonWithHelmetMap = new WearingHelmet().isRelatedPersonAndHelmet(matchedPersonMotorbike, helmetLocationList);
                 //Match map HelmetLocation and MotorbikeLocation with HelmetLocation
-                Map<PersonLocation, HelmetLocation> matchedPersonWithHelmetMap = new WearingHelmetAlgorithm().isRelatedPersonAndHelmet(matchedPersonMotorbike, helmetLocationList);
+//                Map<PersonLocation, HelmetLocation> matchedPersonWithHelmetMap = new WearingHelmetAlgorithm().isRelatedPersonAndHelmet(matchedPersonMotorbike, helmetLocationList);
 
                 //Get List PersonLocation and MotorbikeLocation base on HelmetLocation
                 List<PersonLocation> matchedPersonHelmetList = new ArrayList<PersonLocation>(matchedPersonWithHelmetMap.keySet());
