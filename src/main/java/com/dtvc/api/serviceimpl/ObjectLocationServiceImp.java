@@ -1,4 +1,4 @@
-package com.dtvc.api.service.implement;
+package com.dtvc.api.serviceimpl;
 
 import com.dtvc.api.service.ObjectLocationService;
 import org.springframework.boot.web.client.RestTemplateBuilder;

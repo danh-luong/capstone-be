@@ -1,4 +1,4 @@
-package com.dtvc.api.service.implement;
+package com.dtvc.api.serviceimpl;
 
 import com.dtvc.api.location.MotorbikeLocation;
 import com.dtvc.api.service.MotorbikeService;

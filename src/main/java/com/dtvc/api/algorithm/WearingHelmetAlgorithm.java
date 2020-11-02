@@ -95,8 +95,8 @@ public class WearingHelmetAlgorithm {
                     }
                 }
                 if (motorbikeLocationList.get(i).getLeft() <= personLocationList.get(j).getLeft()
-                        && motorbikeLocationList.get(i).getRight() <= personLocationList.get(j).getRight()
-                        && motorbikeLocationList.get(i).getTop() <= personLocationList.get(j).getTop()
+                        && motorbikeLocationList.get(i).getRight() >= personLocationList.get(j).getRight()
+                        && motorbikeLocationList.get(i).getTop() >= personLocationList.get(j).getTop()
                         && motorbikeLocationList.get(i).getBottom() <= personLocationList.get(j).getBottom()) {
                     //trả về 100% ko tính IoU
                     listMap.put(personLocationList.get(j), motorbikeLocationList.get(i));

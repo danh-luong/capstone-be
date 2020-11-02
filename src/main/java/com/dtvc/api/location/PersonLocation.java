@@ -3,6 +3,7 @@ package com.dtvc.api.location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class PersonLocation extends ObjectLocation {
-
     private int id;
 
 }
