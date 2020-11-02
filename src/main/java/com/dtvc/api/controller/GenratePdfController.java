@@ -15,7 +15,7 @@ public class GenratePdfController {
 
     @PostMapping("/pdf")
     public String generatePdf() {
-        pdfGenerator.generatePdf();
+//        pdfGenerator.generatePdf();
         return "success";
     }
 }

@@ -3,6 +3,7 @@ package com.dtvc.api.service;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
+import core.domain.PunishmentReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,11 @@ public class PdfGenerator {
     @Autowired
     ServletContext context;
 
-    public String generatePdf() {
+    public String generatePdf(PunishmentReport punishmentReport) {
+        String pdfName = "Violation" + punishmentReport.getCaseId() + ".pdf";
         try {
             Document document = new Document();
-            PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream("Violation.pdf"));
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pdfName));
             document.open();
 
             Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 25, Font.BOLD, BaseColor.BLACK);
@@ -36,15 +38,15 @@ public class PdfGenerator {
 
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             StringBuilder headContent = new StringBuilder();
-            headContent.append("Violation Date: " + df.format(new Date()) + "\n");
-            headContent.append("Location: Đường D1, Lô E2a-7 Khu Công Nghệ Cao, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh\n");
-            headContent.append("License Plate: 51A-123456\n");
+            headContent.append("Violation Date: " + df.format(punishmentReport.getCreatedDate()) + "\n");
+            headContent.append("Location: " + punishmentReport.getLocation() + "\n");
+            headContent.append("License Plate:" + punishmentReport.getLicensePlate() + "\n");
             Chunk headChunk = new Chunk(headContent.toString(), new Font(bf, 14));
             Paragraph headParagraph = new Paragraph();
             headParagraph.add(headChunk);
             document.add(headParagraph);
 
-            Image image = Image.getInstance("D:\\black.jpg");
+            Image image = Image.getInstance(punishmentReport.getImage().getUrl());
             image.setAlignment(Element.ALIGN_CENTER);
             image.scaleAbsolute(350f, 350f);
             document.add(image);
@@ -55,7 +57,7 @@ public class PdfGenerator {
 
             BaseFont typeOfViolation = BaseFont.createFont(new FileSystemResource("").getFile().getAbsolutePath() + "\\src\\main\\resources\\OpenSans-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             StringBuilder violationContentString = new StringBuilder();
-            violationContentString.append("Passing red line\n");
+            violationContentString.append( punishmentReport.getViolationType().getName() + "\n");
             Chunk violationContent = new Chunk(violationContentString.toString().trim(), new Font(typeOfViolation, 14));
             Paragraph bodyContent = new Paragraph();
             bodyContent.add(violationTitle);
@@ -67,6 +69,6 @@ public class PdfGenerator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return new FileSystemResource("").getFile().getAbsolutePath() + pdfName;
     }
 }
