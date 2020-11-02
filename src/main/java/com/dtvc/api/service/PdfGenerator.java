@@ -57,7 +57,7 @@ public class PdfGenerator {
 
             BaseFont typeOfViolation = BaseFont.createFont(new FileSystemResource("").getFile().getAbsolutePath() + "\\src\\main\\resources\\OpenSans-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             StringBuilder violationContentString = new StringBuilder();
-            violationContentString.append( punishmentReport.getViolationType().getName() + "\n");
+            violationContentString.append(punishmentReport.getViolationType().getName() + "\n");
             Chunk violationContent = new Chunk(violationContentString.toString().trim(), new Font(typeOfViolation, 14));
             Paragraph bodyContent = new Paragraph();
             bodyContent.add(violationTitle);
@@ -69,6 +69,6 @@ public class PdfGenerator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new FileSystemResource("").getFile().getAbsolutePath() + pdfName;
+        return new FileSystemResource("").getFile().getAbsolutePath() + "\\" + pdfName;
     }
 }
