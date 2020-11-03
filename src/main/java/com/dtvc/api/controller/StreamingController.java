@@ -20,13 +20,14 @@ import java.util.Map;
 @RestController
 public class StreamingController {
 
-    private static final String urlCamera = "rtsp://admin:DNJKLM@192.168.100.7:554";
+    private static final String urlCamera = "rtsp://admin:DNJKLM@192.168.43.23:554";
+    private static final String urlCamera1 = "rtsp://admin:DERRUH@192.168.43.110:554";
 
     static {
         String path = null;
         try {
             //I have copied dlls from opencv folder to my project folder
-            path = "D:\\FPT_Semester\\Capstone_Project\\new_backend\\api";
+            path = "C:\\Users\\ASUS\\Desktop\\dtvc-be";
             System.load(path+"\\opencv_java430.dll");
             System.load(path+"\\opencv_videoio_ffmpeg430_64.dll");
         } catch (UnsatisfiedLinkError e) {
@@ -60,7 +61,7 @@ public class StreamingController {
         VideoCapture camera = new VideoCapture();
         camera.set(Videoio.CAP_PROP_FRAME_WIDTH,  640);
         camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, 480);
-        camera.open(urlCamera);
+        camera.open(urlCamera1);
         Mat mat = new Mat();
         new Runnable() {
             @Override
@@ -68,7 +69,7 @@ public class StreamingController {
                 while (true) {
                     camera.read(mat);
                     if (camera.isOpened()) {
-                        byte[] imgBytes = MatService.matToStream(mat);
+                        byte[] imgBytes = MatService.matToLeftStream(mat);
                         String imgBase64 = Base64.getEncoder().encodeToString(imgBytes);
                         Map<String, String> listStringMap = new HashMap<>();
                         listStringMap.put("frame", imgBase64);
@@ -95,7 +96,7 @@ public class StreamingController {
                 while (true) {
                     camera.read(mat);
                     if (camera.isOpened()) {
-                        byte[] imgBytes = MatService.matToStream(mat);
+                        byte[] imgBytes = MatService.matToRightStream(mat);
                         String imgBase64 = Base64.getEncoder().encodeToString(imgBytes);
                         Map<String, String> listStringMap = new HashMap<>();
                         listStringMap.put("frame", imgBase64);

@@ -7,7 +7,13 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class MatService {
 
-    public static byte[] matToStream(Mat mat) {
+    public static byte[] matToLeftStream(Mat mat) {
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".jpg", mat, matOfByte);
+        return matOfByte.toArray();
+    }
+
+    public static byte[] matToRightStream(Mat mat) {
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".jpg", mat, matOfByte);
         return matOfByte.toArray();

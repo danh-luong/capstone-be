@@ -33,8 +33,8 @@ public class CaseController {
     @Autowired
     private RejectedCaseService rejectedCaseService;
 
-//    @Autowired
-//    private CaseService caseService;
+    @Autowired
+    private CaseService caseService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -108,16 +108,19 @@ public class CaseController {
             Optional<List<RejectedCase>> rejectedCases = rejectedCaseService.getAll(pageable);
             if (rejectedCases.isPresent()) {
                 list = objectMapper.convertToListDTO(rejectedCases.get(), CaseDTO.class);
+                list = caseService.setCaseType(list, caseType);
             }
         } else if (caseType.equalsIgnoreCase(AppConstants.DEFAULT_CASE)) {
             Optional<List<UnconfirmedCase>> unconfirmedCases = unconfirmedCaseService.getAll(pageable);
             if (unconfirmedCases.isPresent()) {
                 list = objectMapper.convertToListDTO(unconfirmedCases.get(), CaseDTO.class);
+                list = caseService.setCaseType(list, caseType);
             }
         } else {
             Optional<List<PunishmentReport>> punishmentReports = punishmentReportService.getAll(pageable);
             if (punishmentReports.isPresent()) {
                 list = objectMapper.convertToListDTO(punishmentReports.get(), CaseDTO.class);
+                list = caseService.setCaseType(list, caseType);
             }
         }
         return list;
