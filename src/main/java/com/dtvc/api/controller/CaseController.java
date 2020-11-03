@@ -7,7 +7,7 @@ import core.domain.UnconfirmedCase;
 import core.domain.PunishmentReport;
 import core.domain.RejectedCase;
 import core.domain.ViolationType;
-import core.domain.Case;
+//import core.domain.Case;
 import core.dto.CaseDTO;
 import core.dto.CountDTO;
 import core.util.DateTime;
@@ -33,8 +33,8 @@ public class CaseController {
     @Autowired
     private RejectedCaseService rejectedCaseService;
 
-//    @Autowired
-//    private CaseService caseService;
+    @Autowired
+    private CaseService caseService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -92,8 +92,10 @@ public class CaseController {
                     list = objectMapper.convertToListDTO(punishmentReports.get(), CaseDTO.class);
                 }
             }
+            if (!list.isEmpty()) {
+                list = caseService.setCaseType(list, caseType);
+            }
         } catch (Exception ex) {
-
         }
         return list;
     }
@@ -119,6 +121,9 @@ public class CaseController {
             if (punishmentReports.isPresent()) {
                 list = objectMapper.convertToListDTO(punishmentReports.get(), CaseDTO.class);
             }
+        }
+        if (!list.isEmpty()) {
+            list = caseService.setCaseType(list, caseType);
         }
         return list;
     }

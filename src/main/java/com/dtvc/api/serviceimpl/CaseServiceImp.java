@@ -5,6 +5,7 @@ import core.domain.Case;
 import core.domain.PunishmentReport;
 import core.domain.RejectedCase;
 import core.domain.UnconfirmedCase;
+import core.dto.CaseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,8 +13,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CaseServiceImp {
-//        implements CaseService {
+public class CaseServiceImp implements CaseService {
+
+    @Override
+    public List<CaseDTO> setCaseType(List<CaseDTO> list, String caseType) {
+        for (CaseDTO caseDTO : list) {
+            caseDTO.setCaseType(caseType);
+        }
+        return list;
+    }
 
 //    @Override
 //    public List<Case> convertFromRejectedCase(Optional<List<RejectedCase>> rejectedCases) {

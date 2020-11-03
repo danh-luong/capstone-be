@@ -19,6 +19,7 @@ import java.sql.Date;
 public class CaseDTO implements Serializable {
 
     private int caseId;
+    private String caseType;
     private String reportUrl;
     private String trainedStatus;
     private String location;
