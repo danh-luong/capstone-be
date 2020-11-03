@@ -42,4 +42,10 @@ public class RejectedCaseServiceImp implements RejectedCaseService {
         int count = rejectedCaseRepository.getCountOfStatus(status, violationId);
         return count;
     }
+
+    @Override
+    public Optional<RejectedCase> getById(int caseId) {
+        Optional<RejectedCase> rejectedCase = rejectedCaseRepository.findById(caseId);
+        return rejectedCase;
+    }
 }

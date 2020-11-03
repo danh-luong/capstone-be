@@ -6,16 +6,15 @@ import com.dtvc.api.location.MotorbikeLocation;
 import com.dtvc.api.location.PersonLocation;
 import com.dtvc.api.location.TrafficLight;
 import com.dtvc.api.service.*;
-import com.dtvc.api.util.Constants;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import core.constants.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,15 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-
-import java.util.concurrent.CompletableFuture;
-
 @RestController
 @RequestMapping("/detect")
 public class HandleDetectObjectsController {
-
-    @Autowired
-    private HelmetService helmetService;
 
     @Autowired
     private TrafficLightService trafficLightService;
@@ -45,11 +38,8 @@ public class HandleDetectObjectsController {
     @Autowired
     private ObjectLocationService objectLocationService;
 
-    @Autowired
-    private PersonAndMotorbikeService personAndMotorbikeService;
-
     @PostMapping("/object")
-    public String callDetectObjectsApiV2(@RequestBody Map<String, String> imageBase64) {
+    public String callDetectObjectsApi(@RequestBody Map<String, String> imageBase64) {
         long start = System.currentTimeMillis();
         String listObject = null;
         String result = "";
@@ -85,8 +75,7 @@ public class HandleDetectObjectsController {
                 int[] lane = {462, 1000, 200, 230};
 //                calculate distance from line to lane
                 int laneDistance = laneService.calculateDistance(line, lane);
-                System.out.println("lane: " + laneDistance);
-                int count = motorbikeService.detectPassingRedLight(motorbikeLocationList, line, Constants.LANE_RATE, laneDistance);
+                int count = motorbikeService.detectPassingRedLight(motorbikeLocationList, line, AppConstants.LANE_RATE, laneDistance);
                 if (count > 0) {
                     result = "There are " + count + " cases of red light violation";
                 }
@@ -105,25 +94,12 @@ public class HandleDetectObjectsController {
                 //Check isWearingHelmet or Not
                 Map<PersonLocation, MotorbikeLocation> notWearingHelmet = new HashMap<>();
                 int countNotHelmet = 0;
-                for(PersonLocation entry: matchedPersonWithHelmetMap.keySet()){
-                    System.out.println("4 left: " + entry.getLeft() + " | right: " + entry.getRight()
-                            + " | top: " + entry.getTop() + " | bottom: " + entry.getBottom());
-                    System.out.println("5 left: " + matchedPersonWithHelmetMap.get(entry).getLeft() + " | right: " + matchedPersonWithHelmetMap.get(entry).getRight()
-                            + " | top: " + matchedPersonWithHelmetMap.get(entry).getTop() + " | bottom: " + matchedPersonWithHelmetMap.get(entry).getBottom());
-
-                }
-                System.out.println("size:"+ matchedPersonWithHelmetMap.size());
-                System.out.println("size 2:"+ matchedPersonMotorbike.size());
                 if (matchedPersonMotorbike.size() != matchedPersonHelmetList.size()) {
-                    System.out.println("aaaaaaa");
                     for (int i = 0; i < matchedPersonMotorbike.size(); i++) {
                         if (!matchedPersonWithHelmetMap.containsKey(matchedPersonMotorbike.get(i))) {
                             notWearingHelmet.put(matchedPersonMotorbike.get(i),
                                     personLocationMotorbikeLocationMap.get(matchedPersonMotorbike.get(i)));
                             countNotHelmet++;
-                            MotorbikeLocation motorbike = personLocationMotorbikeLocationMap.get(matchedPersonMotorbike.get(i));
-                            System.out.println("2 left: " + motorbike.getLeft() + " | right: " + motorbike.getRight()
-                                    + " | top: " + motorbike.getTop() + " | bottom: " + motorbike.getBottom());
                         }
                     }
                 }

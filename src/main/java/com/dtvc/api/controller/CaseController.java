@@ -1,11 +1,7 @@
 package com.dtvc.api.controller;
 
 import com.dtvc.api.mapper.ObjectMapper;
-import com.dtvc.api.service.ViolationTypeService;
-import com.dtvc.api.service.RejectedCaseService;
-import com.dtvc.api.service.CaseService;
-import com.dtvc.api.service.UnconfirmedCaseService;
-import com.dtvc.api.service.PunishmentReportService;
+import com.dtvc.api.service.*;
 import core.constants.AppConstants;
 import core.domain.UnconfirmedCase;
 import core.domain.PunishmentReport;
@@ -141,6 +137,9 @@ public class CaseController {
         return new ResponseEntity("200", HttpStatus.OK);
     }
 
+    @Autowired
+    private PdfGenerator pdfGenerator;
+
     @PostMapping(value = "/approve")
     public ResponseEntity approve(@RequestParam(name = "caseId") int caseId) {
         Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseService.getById(caseId);
@@ -148,7 +147,10 @@ public class CaseController {
         PunishmentReport punishmentReport = (PunishmentReport) objectMapper.convertToEntity(caseDTO, PunishmentReport.class);
         unconfirmedCaseService.delete(caseId);
         punishmentReport.setTrainedStatus(AppConstants.NOT_TRAINED_STATUS);
+        String urlOfPdf = pdfGenerator.generatePdf(punishmentReport);
+        punishmentReport.setReportUrl(urlOfPdf);
         int row = punishmentReportService.create(punishmentReport);
+
         if (row < 1) {
             return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
         }
@@ -168,5 +170,38 @@ public class CaseController {
             countDTO.setCount(count);
         }
         return countDTO;
+    }
+
+    @GetMapping(value = "/getDetail")
+    public CaseDTO geDetail(@RequestParam(name = "caseType", defaultValue = AppConstants.APPROVED_CASE) String caseType,
+                            @RequestParam(name = "caseId") int caseId) {
+        CaseDTO caseDTO = null;
+        if (caseType.equals(AppConstants.REJECTED_CASE)) {
+            Optional<RejectedCase> rejectedCase = rejectedCaseService.getById(caseId);
+            if (rejectedCase.isPresent()) {
+                caseDTO = (CaseDTO) objectMapper.convertToDTO(rejectedCase.get(), CaseDTO.class);
+            }
+        } else if (caseType.equals(AppConstants.DEFAULT_CASE)) {
+            Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseService.getById(caseId);
+            if (unconfirmedCase.isPresent()) {
+                caseDTO = (CaseDTO) objectMapper.convertToDTO(unconfirmedCase.get(), CaseDTO.class);
+            }
+        } else {
+            Optional<PunishmentReport> punishmentReport = punishmentReportService.getById(caseId);
+            if (punishmentReport.isPresent()) {
+                caseDTO = (CaseDTO) objectMapper.convertToDTO(punishmentReport.get(), CaseDTO.class);
+            }
+        }
+        return caseDTO;
+    }
+
+    @PostMapping(value = "/update")
+    public ResponseEntity update(@RequestParam(name = "caseId") int caseId,
+                                 @RequestParam(name = "licensePlate") String licensePlate) {
+        int row = unconfirmedCaseService.update(caseId, licensePlate);
+        if (row < 1) {
+            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("200", HttpStatus.OK);
     }
 }

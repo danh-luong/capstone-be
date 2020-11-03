@@ -16,4 +16,6 @@ public interface UnconfirmedCaseService {
     void delete(int caseId);
 
     Optional<UnconfirmedCase> getById(int caseId);
+
+    int update(int caseId, String licensePlate);
 }

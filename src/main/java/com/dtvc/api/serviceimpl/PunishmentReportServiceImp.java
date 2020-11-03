@@ -42,4 +42,10 @@ public class PunishmentReportServiceImp implements PunishmentReportService {
         int count = punishmentReportRepository.getCountOfStatus(status, violationId);
         return count;
     }
+
+    @Override
+    public Optional<PunishmentReport> getById(int caseId) {
+        Optional<PunishmentReport> punishmentReport = punishmentReportRepository.findById(caseId);
+        return punishmentReport;
+    }
 }

@@ -4,11 +4,13 @@ import core.domain.RejectedCase;
 import core.domain.UnconfirmedCase;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,4 +32,13 @@ public interface UnconfirmedCaseRepository extends JpaRepository<UnconfirmedCase
             " from unconfirmed_cases",
             nativeQuery = true)
     Optional<List<UnconfirmedCase>> getall(Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update unconfirmed_cases" +
+            " set license_plate = :licensePlate" +
+            " where case_id = :caseId",
+            nativeQuery = true)
+    int update(@Param("caseId") int caseId,
+               @Param("licensePlate") String licensePlate);
 }
