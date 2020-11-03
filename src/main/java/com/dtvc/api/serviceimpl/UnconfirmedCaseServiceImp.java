@@ -39,4 +39,10 @@ public class UnconfirmedCaseServiceImp implements UnconfirmedCaseService {
         Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseRepository.findById(caseId);
         return unconfirmedCase;
     }
+
+    @Override
+    public int update(int caseId, String licensePlate) {
+        int row = unconfirmedCaseRepository.update(caseId, licensePlate);
+        return row;
+    }
 }

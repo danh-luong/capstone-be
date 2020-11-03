@@ -17,4 +17,5 @@ public interface UnconfirmedCaseService {
 
     Optional<UnconfirmedCase> getById(int caseId);
 
+    int update(int caseId, String licensePlate);
 }

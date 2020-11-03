@@ -194,4 +194,14 @@ public class CaseController {
         }
         return caseDTO;
     }
+
+    @PostMapping(value = "/update")
+    public ResponseEntity update(@RequestParam(name = "caseId") int caseId,
+                                 @RequestParam(name = "licensePlate") String licensePlate) {
+        int row = unconfirmedCaseService.update(caseId, licensePlate);
+        if (row < 1) {
+            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("200", HttpStatus.OK);
+    }
 }
