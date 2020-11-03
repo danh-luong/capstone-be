@@ -16,4 +16,6 @@ public interface RejectedCaseService {
     int create(RejectedCase rejectedCase);
 
     int getCountOfStatus(String status, int violationId);
+
+    Optional<RejectedCase> getById(int caseId);
 }

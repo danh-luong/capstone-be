@@ -60,4 +60,11 @@ public interface CameraRepository extends JpaRepository<Camera, Integer>, Paging
                @Param("location") String location,
                @Param("groupId") int groupId,
                @Param("connectionUrl") String connectionUrl);
+
+    @Query(value = "select *" +
+            " from cameras" +
+            " where status = :status",
+            nativeQuery = true)
+    Optional<List<Camera>> getAll(Pageable pageable,
+                                  @Param("status") String status);
 }

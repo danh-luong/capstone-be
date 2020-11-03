@@ -16,4 +16,6 @@ public interface PunishmentReportService {
     int create(PunishmentReport punishmentReport);
 
     int getCountOfStatus(String status, int violationId);
+
+    Optional<PunishmentReport> getById(int caseId);
 }

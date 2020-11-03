@@ -171,4 +171,27 @@ public class CaseController {
         }
         return countDTO;
     }
+
+    @GetMapping(value = "/getDetail")
+    public CaseDTO geDetail(@RequestParam(name = "caseType", defaultValue = AppConstants.APPROVED_CASE) String caseType,
+                            @RequestParam(name = "caseId") int caseId) {
+        CaseDTO caseDTO = null;
+        if (caseType.equals(AppConstants.REJECTED_CASE)) {
+            Optional<RejectedCase> rejectedCase = rejectedCaseService.getById(caseId);
+            if (rejectedCase.isPresent()) {
+                caseDTO = (CaseDTO) objectMapper.convertToDTO(rejectedCase.get(), CaseDTO.class);
+            }
+        } else if (caseType.equals(AppConstants.DEFAULT_CASE)) {
+            Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseService.getById(caseId);
+            if (unconfirmedCase.isPresent()) {
+                caseDTO = (CaseDTO) objectMapper.convertToDTO(unconfirmedCase.get(), CaseDTO.class);
+            }
+        } else {
+            Optional<PunishmentReport> punishmentReport = punishmentReportService.getById(caseId);
+            if (punishmentReport.isPresent()) {
+                caseDTO = (CaseDTO) objectMapper.convertToDTO(punishmentReport.get(), CaseDTO.class);
+            }
+        }
+        return caseDTO;
+    }
 }

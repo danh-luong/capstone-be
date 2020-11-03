@@ -16,4 +16,5 @@ public interface UnconfirmedCaseService {
     void delete(int caseId);
 
     Optional<UnconfirmedCase> getById(int caseId);
+
 }

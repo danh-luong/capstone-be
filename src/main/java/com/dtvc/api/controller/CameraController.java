@@ -36,9 +36,9 @@ public class CameraController {
 
     @GetMapping(value = "/filterByLocationAndStatus")
     public Optional<List<Camera>> filterByLocationAndStatus(@RequestParam(name = "location", defaultValue = "") String location,
-                                                   @RequestParam(name = "status", defaultValue = AppConstants.DEFAULT_STATUS) String status,
-                                                   @RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE + "") int page,
-                                                   @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
+                                                            @RequestParam(name = "status", defaultValue = AppConstants.DEFAULT_STATUS) String status,
+                                                            @RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE + "") int page,
+                                                            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("group_id"));
         Optional<List<Camera>> list = cameraService.filterByLocationAndStatus(location, status, pageable);
         return list;
@@ -93,6 +93,15 @@ public class CameraController {
     @GetMapping(value = "/searchGroupByName")
     public Optional<List<GroupCamera>> searchGroupByName(@RequestParam(name = "value", defaultValue = "") String value) {
         Optional<List<GroupCamera>> list = groupCameraService.searchByName(AppConstants.MAX_GROUP_SIZE, value);
+        return list;
+    }
+
+    @GetMapping(value = "/getAll")
+    public Optional<List<Camera>> getAll(@RequestParam(name = "status", defaultValue = AppConstants.DEFAULT_STATUS) String status,
+                                         @RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE + "") int page,
+                                         @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("group_id"));
+        Optional<List<Camera>> list = cameraService.getAll(pageable, status);
         return list;
     }
 
