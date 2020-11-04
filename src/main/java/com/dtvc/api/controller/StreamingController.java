@@ -20,7 +20,8 @@ import java.util.Map;
 @RestController
 public class StreamingController {
 
-    private static final String urlCamera = "rtsp://admin:DNJKLM@192.168.100.7:554";
+    private static final String urlCamera = "rtsp://admin:DNJKLM@192.168.100.9:554";
+    private static final String urlCamera1 = "rtsp://admin:DERRUH@192.168.100.7:554";
 
     static {
         String path = null;
@@ -60,7 +61,7 @@ public class StreamingController {
         VideoCapture camera = new VideoCapture();
         camera.set(Videoio.CAP_PROP_FRAME_WIDTH,  640);
         camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, 480);
-        camera.open(urlCamera);
+        camera.open(urlCamera1);
         Mat mat = new Mat();
         new Runnable() {
             @Override
@@ -89,7 +90,7 @@ public class StreamingController {
         camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, 480);
         camera.open(urlCamera);
         Mat mat = new Mat();
-        new Runnable() {
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -103,7 +104,8 @@ public class StreamingController {
                     }
                 }
             }
-        }.run();
+        };
+        runnable.run();
         return null;
     }
 }
