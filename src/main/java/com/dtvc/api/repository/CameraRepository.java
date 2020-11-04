@@ -24,7 +24,7 @@ public interface CameraRepository extends JpaRepository<Camera, Integer>, Paging
     Optional<List<String>> searchLocation(@Param(value = "value") String value);
 
     @Query(value = "select *" +
-            " from cameras where location = :location and status = :status",
+            " from cameras where location like %:location% and status = :status",
             nativeQuery = true)
     Optional<List<Camera>> filterByLocationAndStatus(@Param(value = "location") String location,
                                                      @Param(value = "status") String status,
