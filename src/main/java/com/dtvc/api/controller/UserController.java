@@ -37,7 +37,7 @@ public class UserController {
 //            user.setRole(role);
             userService.create(user);
             emailService.sendEmail(AppConstants.SUBJECT, "Click here to confirm your account: " +
-                    AppConstants.HOST + "confirm?username=" + user.getUsername() + "&token=" + token, user.getUsername());
+                    AppConstants.HOST + "?username=" + user.getUsername() + "&token=" + token, user.getUsername());
         } catch (Exception ex) {
             return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
         }

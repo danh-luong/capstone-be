@@ -15,6 +15,6 @@ public class AppConstants {
     public static final String EMAIL = "chienndse63337@gmail.com";
     public static final String PASSWORD = "Chien000";
     public static final String SUBJECT = "Verify account";
-    public static final String HOST = "http://localhost:8080/";
+    public static final String HOST = "http://localhost:8080/confirm";
 //    public static final int DEFAULT_ROLE_ID = 2;//is moderator role
 }
