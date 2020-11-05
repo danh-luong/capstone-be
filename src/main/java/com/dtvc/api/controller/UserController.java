@@ -1,5 +1,6 @@
 package com.dtvc.api.controller;
 
+import com.dtvc.api.service.EmailService;
 import com.dtvc.api.service.UserService;
 import core.constants.AppConstants;
 import core.domain.Role;
@@ -23,6 +24,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EmailService emailService;
+
     @PostMapping(value = "/create")
     public ResponseEntity create(@RequestBody User user) {
         String token = UUID.randomUUID().toString();
@@ -32,10 +36,12 @@ public class UserController {
 //            role.setRoleId(AppConstants.DEFAULT_ROLE_ID);
 //            user.setRole(role);
             userService.create(user);
+            emailService.sendEmail(AppConstants.SUBJECT, "Click here to confirm your account: " +
+                    AppConstants.HOST + "confirm?username=" + user.getUsername() + "&token=" + token, user.getUsername());
         } catch (Exception ex) {
             return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(token, HttpStatus.OK);
+        return new ResponseEntity("200", HttpStatus.OK);
     }
 
     @GetMapping(value = "/search")

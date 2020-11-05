@@ -1,7 +1,5 @@
 package core.constants;
 
-import java.sql.Date;
-
 public class AppConstants {
 
     public static final float LANE_RATE = 20;
@@ -14,5 +12,9 @@ public class AppConstants {
     public static final String DEFAULT_CASE = "unconfirmed";
     public static final String REJECTED_CASE = "rejected";
     public static final String APPROVED_CASE = "punishment";
+    public static final String EMAIL = "chienndse63337@gmail.com";
+    public static final String PASSWORD = "Chien000";
+    public static final String SUBJECT = "Verify account";
+    public static final String HOST = "http://localhost:8080/";
 //    public static final int DEFAULT_ROLE_ID = 2;//is moderator role
 }
