@@ -103,4 +103,14 @@ public class UserController {
         Optional<List<User>> list = userService.filterByStatus(status, pageable);
         return list;
     }
+
+    @GetMapping(value = "/filterByStatusAndName")
+    public Optional<List<User>> filterByStatusAndName(@RequestParam(value = "status", defaultValue = AppConstants.DEFAULT_STATUS) String status,
+                                                      @RequestParam(value = "fullname", defaultValue = "") String fullname,
+                                                      @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE + "") int page,
+                                                      @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("fullname"));
+        Optional<List<User>> list = userService.filterByStatusAndName(status, fullname, pageable);
+        return list;
+    }
 }

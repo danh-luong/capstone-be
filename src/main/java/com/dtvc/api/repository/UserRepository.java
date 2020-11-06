@@ -81,4 +81,12 @@ public interface UserRepository extends JpaRepository<User, String>, PagingAndSo
             nativeQuery = true)
     Optional<List<User>> filterByStatus(@Param("status") String status,
                                         Pageable pageable);
+
+    @Query(value = "select *" +
+            " from users" +
+            " where status = :status and fullname like %:name%",
+            nativeQuery = true)
+    Optional<List<User>> filterByStatusAndName(@Param("status") String status,
+                                               @Param("name") String name,
+                                               Pageable pageable);
 }

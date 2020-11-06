@@ -21,4 +21,6 @@ public interface UserService {
     int confirm(String username, String token, String password, String status);
 
     Optional<List<User>> filterByStatus(String status, Pageable pageable);
+
+    Optional<List<User>> filterByStatusAndName(String status, String name, Pageable pageable);
 }
