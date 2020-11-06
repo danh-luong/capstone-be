@@ -3,7 +3,6 @@ package com.dtvc.api.controller;
 import com.dtvc.api.service.EmailService;
 import com.dtvc.api.service.UserService;
 import core.constants.AppConstants;
-import core.domain.Role;
 import core.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -94,5 +93,14 @@ public class UserController {
             return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity("200", HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/filterByStatus")
+    public Optional<List<User>> filterByStatus(@RequestParam(value = "status", defaultValue = AppConstants.DEFAULT_STATUS) String status,
+                                               @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE + "") int page,
+                                               @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("fullname"));
+        Optional<List<User>> list = userService.filterByStatus(status, pageable);
+        return list;
     }
 }

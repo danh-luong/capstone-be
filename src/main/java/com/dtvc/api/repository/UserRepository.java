@@ -74,4 +74,11 @@ public interface UserRepository extends JpaRepository<User, String>, PagingAndSo
                 @Param("token") String token,
                 @Param("password") String password,
                 @Param("status") String status);
+
+    @Query(value = "select *" +
+            " from users" +
+            " where status = :status",
+            nativeQuery = true)
+    Optional<List<User>> filterByStatus(@Param("status") String status,
+                                        Pageable pageable);
 }

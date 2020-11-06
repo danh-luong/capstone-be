@@ -19,4 +19,6 @@ public interface UserService {
     int updateProfile(String username, String fullname);
 
     int confirm(String username, String token, String password, String status);
+
+    Optional<List<User>> filterByStatus(String status, Pageable pageable);
 }

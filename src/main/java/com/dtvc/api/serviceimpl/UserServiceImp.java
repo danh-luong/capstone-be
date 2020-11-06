@@ -52,4 +52,10 @@ public class UserServiceImp implements UserService {
         return row;
     }
 
+    @Override
+    public Optional<List<User>> filterByStatus(String status, Pageable pageable) {
+        Optional<List<User>> list = userRepository.filterByStatus(status, pageable);
+        return list;
+    }
+
 }
