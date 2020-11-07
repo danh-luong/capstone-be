@@ -64,8 +64,14 @@ public class CameraServiceImp implements CameraService {
     }
 
     @Override
-    public Optional<List<Camera>> getAll(Pageable pageable, String status) {
-        Optional<List<Camera>> list = cameraRepository.getAll(pageable, status);
+    public Optional<List<Camera>> getAllByStatus(Pageable pageable, String status) {
+        Optional<List<Camera>> list = cameraRepository.getAllByStatus(pageable, status);
+        return list;
+    }
+
+    @Override
+    public Optional<List<Camera>> getAll(Pageable pageable) {
+        Optional<List<Camera>> list = cameraRepository.getAll(pageable);
         return list;
     }
 

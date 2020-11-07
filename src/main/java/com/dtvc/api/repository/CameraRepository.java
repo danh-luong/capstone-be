@@ -65,6 +65,11 @@ public interface CameraRepository extends JpaRepository<Camera, Integer>, Paging
             " from cameras" +
             " where status = :status",
             nativeQuery = true)
-    Optional<List<Camera>> getAll(Pageable pageable,
-                                  @Param("status") String status);
+    Optional<List<Camera>> getAllByStatus(Pageable pageable,
+                                          @Param("status") String status);
+
+    @Query(value = "select *" +
+            " from cameras",
+            nativeQuery = true)
+    Optional<List<Camera>> getAll(Pageable pageable);
 }

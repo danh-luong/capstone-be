@@ -96,12 +96,20 @@ public class CameraController {
         return list;
     }
 
-    @GetMapping(value = "/getAll")
-    public Optional<List<Camera>> getAll(@RequestParam(name = "status", defaultValue = AppConstants.DEFAULT_STATUS) String status,
+    @GetMapping(value = "/getAllByStatus")
+    public Optional<List<Camera>> getAllByStatus(@RequestParam(name = "status", defaultValue = AppConstants.DEFAULT_STATUS) String status,
                                          @RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE + "") int page,
                                          @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("group_id"));
-        Optional<List<Camera>> list = cameraService.getAll(pageable, status);
+        Optional<List<Camera>> list = cameraService.getAllByStatus(pageable, status);
+        return list;
+    }
+
+    @GetMapping(value = "/getAll")
+    public Optional<List<Camera>> getAll(@RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE + "") int page,
+                                         @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("group_id"));
+        Optional<List<Camera>> list = cameraService.getAll(pageable);
         return list;
     }
 
