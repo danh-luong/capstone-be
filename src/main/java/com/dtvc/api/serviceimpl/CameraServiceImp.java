@@ -2,6 +2,7 @@ package com.dtvc.api.serviceimpl;
 
 import com.dtvc.api.repository.CameraRepository;
 import com.dtvc.api.service.CameraService;
+import core.constants.AppConstants;
 import core.domain.Camera;
 import core.dto.CameraDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,12 @@ public class CameraServiceImp implements CameraService {
 
     @Override
     public Optional<List<Camera>> filterByLocationAndStatus(String location, String status, Pageable pageable) {
-        Optional<List<Camera>> list = cameraRepository.filterByLocationAndStatus(location, status, pageable);
+        Optional<List<Camera>> list = null;
+        if (status.equals(AppConstants.DEFAULT_STATUS)) {
+            list = cameraRepository.filterByLocation(location, pageable);
+        } else {
+            list = cameraRepository.filterByLocationAndStatus(location, status, pageable);
+        }
         return list;
     }
 
@@ -64,8 +70,19 @@ public class CameraServiceImp implements CameraService {
     }
 
     @Override
+    public Camera save(Camera camera) {
+        Camera newCamera = cameraRepository.saveAndFlush(camera);
+        return newCamera;
+    }
+
+    @Override
     public Optional<List<Camera>> getAllByStatus(Pageable pageable, String status) {
-        Optional<List<Camera>> list = cameraRepository.getAllByStatus(pageable, status);
+        Optional<List<Camera>> list = null;
+        if (status.equals(AppConstants.DEFAULT_STATUS)) {
+            list = cameraRepository.getAll(pageable);
+        } else {
+            list = cameraRepository.getAllByStatus(pageable, status);
+        }
         return list;
     }
 

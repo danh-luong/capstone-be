@@ -2,6 +2,7 @@ package com.dtvc.api.serviceimpl;
 
 import com.dtvc.api.repository.UserRepository;
 import com.dtvc.api.service.UserService;
+import core.constants.AppConstants;
 import core.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -54,13 +55,23 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Optional<List<User>> filterByStatus(String status, Pageable pageable) {
-        Optional<List<User>> list = userRepository.filterByStatus(status, pageable);
+        Optional<List<User>> list = null;
+        if (status.equals(AppConstants.DEFAULT_STATUS)) {
+            list = userRepository.searchByName("", pageable);
+        } else {
+            list = userRepository.filterByStatus(status, pageable);
+        }
         return list;
     }
 
     @Override
     public Optional<List<User>> filterByStatusAndName(String status, String name, Pageable pageable) {
-        Optional<List<User>> list = userRepository.filterByStatusAndName(status, name, pageable);
+        Optional<List<User>> list = null;
+        if (status.equals(AppConstants.DEFAULT_STATUS)) {
+            list = userRepository.searchByName(name, pageable);
+        } else {
+            list = userRepository.filterByStatusAndName(status, name, pageable);
+        }
         return list;
     }
 

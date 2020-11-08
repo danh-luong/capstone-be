@@ -52,4 +52,12 @@ public interface RejectedCaseRepository extends JpaRepository<RejectedCase, Inte
             nativeQuery = true)
     int getCountOfStatus(@Param("status") String status,
                          @Param("violationId") int violationId);
+
+    @Query(value = "select *" +
+            " from rejected_cases" +
+            " where created_date between :fromDate and :toDate",
+            nativeQuery = true)
+    Optional<List<RejectedCase>> filterByDate(@Param("fromDate") Date fromDate,
+                                              @Param("toDate") Date toDate,
+                                              Pageable pageable);
 }

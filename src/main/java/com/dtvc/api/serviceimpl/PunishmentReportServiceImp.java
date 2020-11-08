@@ -19,7 +19,12 @@ public class PunishmentReportServiceImp implements PunishmentReportService {
 
     @Override
     public Optional<List<PunishmentReport>> filter(Date fromDate, Date toDate, int violationId, Pageable pageable) {
-        Optional<List<PunishmentReport>> list = punishmentReportRepository.filter(fromDate, toDate, violationId, pageable);
+        Optional<List<PunishmentReport>> list = null;
+        if (violationId == -1) {
+            list = punishmentReportRepository.filterByDate(fromDate, toDate, pageable);
+        } else {
+            list = punishmentReportRepository.filter(fromDate, toDate, violationId, pageable);
+        }
         return list;
     }
 

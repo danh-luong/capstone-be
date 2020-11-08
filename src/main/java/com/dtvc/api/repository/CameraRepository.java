@@ -72,4 +72,10 @@ public interface CameraRepository extends JpaRepository<Camera, Integer>, Paging
             " from cameras",
             nativeQuery = true)
     Optional<List<Camera>> getAll(Pageable pageable);
+
+    @Query(value = "select *" +
+            " from cameras where location like %:location%",
+            nativeQuery = true)
+    Optional<List<Camera>> filterByLocation(@Param("location") String location,
+                                            Pageable pageable);
 }

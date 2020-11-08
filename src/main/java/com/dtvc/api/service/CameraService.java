@@ -21,6 +21,8 @@ public interface CameraService {
 
     int create(Camera camera);
 
+    Camera save(Camera camera);
+
     Optional<List<Camera>> getAllByStatus(Pageable pageable, String status);
 
     Optional<List<Camera>> getAll(Pageable pageable);

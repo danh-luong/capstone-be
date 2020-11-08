@@ -54,4 +54,12 @@ public interface PunishmentReportRepository extends JpaRepository<PunishmentRepo
             nativeQuery = true)
     int getCountOfStatus(@Param("status") String status,
                          @Param("violationId") int violationId);
+
+    @Query(value = "select *" +
+            " from punishment_reports" +
+            " where created_date between :fromDate and :toDate",
+            nativeQuery = true)
+    Optional<List<PunishmentReport>> filterByDate(@Param("fromDate") Date fromDate,
+                                                  @Param("toDate") Date toDate,
+                                                  Pageable pageable);
 }

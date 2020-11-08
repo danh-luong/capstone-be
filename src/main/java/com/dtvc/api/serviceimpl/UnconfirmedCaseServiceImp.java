@@ -19,7 +19,12 @@ public class UnconfirmedCaseServiceImp implements UnconfirmedCaseService {
 
     @Override
     public Optional<List<UnconfirmedCase>> filter(Date fromDate, Date toDate, int violationId, Pageable pageable) {
-        Optional<List<UnconfirmedCase>> list = unconfirmedCaseRepository.filter(fromDate, toDate, violationId, pageable);
+        Optional<List<UnconfirmedCase>> list = null;
+        if (violationId == -1) {
+            list = unconfirmedCaseRepository.filterByDate(fromDate, toDate, pageable);
+        } else {
+            list = unconfirmedCaseRepository.filter(fromDate, toDate, violationId, pageable);
+        }
         return list;
     }
 

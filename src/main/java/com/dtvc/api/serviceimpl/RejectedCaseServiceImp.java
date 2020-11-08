@@ -19,7 +19,12 @@ public class RejectedCaseServiceImp implements RejectedCaseService {
 
     @Override
     public Optional<List<RejectedCase>> filter(Date fromDate, Date toDate, int violationId, Pageable pageable) {
-        Optional<List<RejectedCase>> list = rejectedCaseRepository.filter(fromDate, toDate, violationId, pageable);
+        Optional<List<RejectedCase>> list = null;
+        if (violationId == -1) {
+            list = rejectedCaseRepository.filterByDate(fromDate, toDate, pageable);
+        } else {
+            list = rejectedCaseRepository.filter(fromDate, toDate, violationId, pageable);
+        }
         return list;
     }
 

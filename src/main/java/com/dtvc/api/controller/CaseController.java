@@ -164,7 +164,7 @@ public class CaseController {
 
     @GetMapping(value = "/getCountOfStatus")
     public CountDTO getCountOfStatus(@RequestParam(name = "status") String status,
-                                     @RequestParam(name = "violationId", defaultValue = AppConstants.DEFAULT_VIOLATION_TYPE + "") int violationId,
+                                     @RequestParam(name = "violationId", defaultValue = AppConstants.DEFAULT_VIOLATION_TYPE_ID + "") int violationId,
                                      @RequestParam(name = "caseType", defaultValue = AppConstants.APPROVED_CASE) String caseType) {
         CountDTO countDTO = new CountDTO();
         if (caseType.equals(AppConstants.REJECTED_CASE)) {

@@ -1,6 +1,5 @@
 package com.dtvc.api.repository;
 
-import core.domain.RejectedCase;
 import core.domain.UnconfirmedCase;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +40,12 @@ public interface UnconfirmedCaseRepository extends JpaRepository<UnconfirmedCase
             nativeQuery = true)
     int update(@Param("caseId") int caseId,
                @Param("licensePlate") String licensePlate);
+
+    @Query(value = "select *" +
+            " from unconfirmed_cases" +
+            " where created_date between :fromDate and :toDate",
+            nativeQuery = true)
+    Optional<List<UnconfirmedCase>> filterByDate(@Param("fromDate") Date fromDate,
+                                                 @Param("toDate") Date toDate,
+                                                 Pageable pageable);
 }
