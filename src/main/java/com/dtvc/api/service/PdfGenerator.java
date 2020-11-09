@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import java.io.FileOutputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Service
 public class PdfGenerator {
@@ -46,7 +47,9 @@ public class PdfGenerator {
             headParagraph.add(headChunk);
             document.add(headParagraph);
 
-            Image image = Image.getInstance(punishmentReport.getImage().getUrl());
+            URL url = new URL(punishmentReport.getImage().getUrl());
+            java.awt.Image imageAwt = ImageIO.read(url);
+            Image image = Image.getInstance(imageAwt, null);
             image.setAlignment(Element.ALIGN_CENTER);
             image.scaleAbsolute(350f, 350f);
             document.add(image);
