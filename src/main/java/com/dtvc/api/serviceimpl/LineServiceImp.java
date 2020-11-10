@@ -29,4 +29,18 @@ public class LineServiceImp implements LineService {
             lineRepository.save(line);
         }
     }
+
+    @Override
+    public List<Line> getListByCameraId(int cameraId) {
+        List<Line> list = lineRepository.getByCameraId(cameraId);
+        return list;
+    }
+
+    @Override
+    public void update(List<Line> lines) {
+        for (Line line : lines) {
+            lineRepository.update(line.getLineId(), line.getLineType(), line.getLeft(),
+                    line.getTop(), line.getRight(), line.getBottom());
+        }
+    }
 }
