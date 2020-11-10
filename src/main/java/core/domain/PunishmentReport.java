@@ -26,7 +26,7 @@ public class PunishmentReport implements Serializable {
     @Id
     @Column(name = "case_id")
     private int caseId;
-    @Column(name = "report_url", length = 500)
+    @Column(name = "report_url", length = 1000)
     private String reportUrl;
     @Column(name = "trained_status")
     private String trainedStatus;

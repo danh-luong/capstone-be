@@ -26,7 +26,7 @@ public class Image implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int imageId;
-    @Column(name = "url", length = 500)
+    @Column(name = "url", length = 1000)
     private String url;
     @ManyToOne
     @JoinColumn(name = "camera_id")
