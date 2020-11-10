@@ -11,7 +11,10 @@ import core.domain.Camera;
 import core.domain.GroupCamera;
 import core.domain.Line;
 import core.dto.CameraDTO;
+import core.dto.LineDTO;
+import core.dto.LocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,10 +40,14 @@ public class CameraController {
     @Autowired
     private LineService lineService;
 
+    @Qualifier("objectMapper")
+    @Autowired
+    private com.dtvc.api.mapper.ObjectMapper mapper;
+
     @GetMapping(value = "/searchLocation")
-    public List<CameraDTO> searchLocation(@RequestParam(name = "value", defaultValue = "") String value) {
+    public List<LocationDTO> searchLocation(@RequestParam(name = "value", defaultValue = "") String value) {
         Optional<List<String>> list = cameraService.searchLocation(value);
-        List<CameraDTO> cameras = cameraService.convertToDTO(list);
+        List<LocationDTO> cameras = cameraService.convertToDTO(list);
         return cameras;
     }
 
@@ -72,16 +79,40 @@ public class CameraController {
         return list;
     }
 
+    /**
+     * @param list Example like create(add id of camera and line)
+     * @return
+     */
     @PostMapping(value = "/update")
-    public ResponseEntity update(@RequestBody Camera camera) {
-        int groupId = camera.getGroupCamera().getGroupId();
-        if (groupId == 0) {
-            GroupCamera groupCamera = groupCameraService.create(camera.getGroupCamera());
-            camera.setGroupCamera(groupCamera);
-        }
-        int row = cameraService.update(camera);
-        if (row < 1) {
-            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+    public ResponseEntity update(@RequestBody String list) {
+//        int groupId = camera.getGroupCamera().getGroupId();
+//        if (groupId == 0) {
+//            GroupCamera groupCamera = groupCameraService.create(camera.getGroupCamera());
+//            camera.setGroupCamera(groupCamera);
+//        }
+        try {
+            Camera camera = null;
+            List<Line> lines = new ArrayList<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+            Map<String, Object> map = objectMapper.readValue(list,
+                    new TypeReference<Map<String, Object>>() {
+                    });
+            for (Map.Entry entry : map.entrySet()) {
+                if (entry.getKey().equals("camera")) {
+                    camera = objectMapper.convertValue(entry.getValue(), Camera.class);
+                } else {
+                    lines.add(objectMapper.convertValue(entry.getValue(), Line.class));
+                }
+            }
+            int groupId = camera.getGroupCamera().getGroupId();
+            if (groupId == 0) {
+                GroupCamera groupCamera = groupCameraService.create(camera.getGroupCamera());
+                camera.setGroupCamera(groupCamera);
+            }
+            cameraService.update(camera);
+            lineService.update(lines);
+        } catch (Exception ex) {
         }
         return new ResponseEntity("200", HttpStatus.OK);
     }
@@ -92,38 +123,39 @@ public class CameraController {
      * if group camera id(groupId) == 0 -> create new group camera
      * example json list:
      * {
-     *     "camera": {
-     *         "location": "asd",
-     *         "connectionUrl": "asfsdfd",
-     *         "position": "left",
-     *         "groupCamera": {
-     *             "groupId": 0,
-     *             "groupName": "sdf"
-     *         },
-     *         "status": "active"
-     *     },
-     *     "line 1": {
-     *         "lineType": "a",
-     *         "top": 10,
-     *         "left": 101,
-     *         "right": 12,
-     *         "bottom": 103
-     *     },
-     *     "line 2": {
-     *         "lineType": "ab",
-     *         "top": 11,
-     *         "left": 102,
-     *         "right": 13,
-     *         "bottom": 104
-     *     },
-     *     "line 3": {
-     *         "lineType": "abc",
-     *         "top": 14,
-     *         "left": 104,
-     *         "right": 14,
-     *         "bottom": 123
-     *     }
+     * "camera": {
+     * "location": "asd",
+     * "connectionUrl": "asfsdfd",
+     * "position": "left",
+     * "groupCamera": {
+     * "groupId": 0,
+     * "groupName": "sdf"
+     * },
+     * "status": "active"
+     * },
+     * "line 1": {
+     * "lineType": "a",
+     * "top": 10,
+     * "left": 101,
+     * "right": 12,
+     * "bottom": 103
+     * },
+     * "line 2": {
+     * "lineType": "ab",
+     * "top": 11,
+     * "left": 102,
+     * "right": 13,
+     * "bottom": 104
+     * },
+     * "line 3": {
+     * "lineType": "abc",
+     * "top": 14,
+     * "left": 104,
+     * "right": 14,
+     * "bottom": 123
      * }
+     * }
+     *
      * @return
      */
     @PostMapping(value = "/create")
@@ -177,6 +209,16 @@ public class CameraController {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("group_id"));
         Optional<List<Camera>> list = cameraService.getAll(pageable);
         return list;
+    }
+
+    @GetMapping(value = "/getById")
+    public CameraDTO getById(@RequestParam(name = "cameraId") int cameraId) {
+        Camera camera = cameraService.getById(cameraId);
+        List<Line> lines = lineService.getListByCameraId(cameraId);
+        CameraDTO cameraDTO = (CameraDTO) mapper.convertToDTO(camera, CameraDTO.class);
+        List<LineDTO> dtoList = mapper.convertToListDTO(lines, LineDTO.class);
+        cameraDTO.setLines(dtoList);
+        return cameraDTO;
     }
 
 }

@@ -10,4 +10,8 @@ public interface LineService {
     List<Line> setCamera(List<Line> lines, Camera camera);
 
     void create(List<Line> lines);
+
+    List<Line> getListByCameraId(int cameraId);
+
+    void update(List<Line> lines);
 }

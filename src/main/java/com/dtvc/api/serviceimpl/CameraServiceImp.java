@@ -4,7 +4,7 @@ import com.dtvc.api.repository.CameraRepository;
 import com.dtvc.api.service.CameraService;
 import core.constants.AppConstants;
 import core.domain.Camera;
-import core.dto.CameraDTO;
+import core.dto.LocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,11 +26,11 @@ public class CameraServiceImp implements CameraService {
     }
 
     @Override
-    public List<CameraDTO> convertToDTO(Optional<List<String>> list) {
-        List<CameraDTO> cameras = new ArrayList<>();
+    public List<LocationDTO> convertToDTO(Optional<List<String>> list) {
+        List<LocationDTO> cameras = new ArrayList<>();
         if (list.isPresent()) {
             for (String location : list.get()) {
-                CameraDTO camera = new CameraDTO();
+                LocationDTO camera = new LocationDTO();
                 camera.setLocation(location);
                 cameras.add(camera);
             }
@@ -90,6 +90,12 @@ public class CameraServiceImp implements CameraService {
     public Optional<List<Camera>> getAll(Pageable pageable) {
         Optional<List<Camera>> list = cameraRepository.getAll(pageable);
         return list;
+    }
+
+    @Override
+    public Camera getById(int id) {
+        Camera camera = cameraRepository.getById(id);
+        return camera;
     }
 
 }
