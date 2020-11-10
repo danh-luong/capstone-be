@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,12 @@ public class CaseController {
 
     @Autowired
     private PunishmentReportService punishmentReportService;
+
+    @Autowired
+    private PdfGenerator pdfGenerator;
+
+    @Autowired
+    private FirebaseService firebaseService;
 
     @GetMapping(value = "/getViolationType")
     public List<ViolationType> getViolationType() {
@@ -142,9 +149,6 @@ public class CaseController {
         return new ResponseEntity("200", HttpStatus.OK);
     }
 
-    @Autowired
-    private PdfGenerator pdfGenerator;
-
     @PostMapping(value = "/approve")
     public ResponseEntity approve(@RequestParam(name = "caseId") int caseId) {
         Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseService.getById(caseId);
@@ -153,9 +157,14 @@ public class CaseController {
         unconfirmedCaseService.delete(caseId);
         punishmentReport.setTrainedStatus(AppConstants.NOT_TRAINED_STATUS);
         String urlOfPdf = pdfGenerator.generatePdf(punishmentReport);
+        String firebaseName = "violationid:" + punishmentReport.getCaseId() + ".pdf";
+        try {
+            urlOfPdf = firebaseService.uploadObject(AppConstants.PROJECT_ID, AppConstants.BUCKET_NAME,
+                    "reports/" + firebaseName, urlOfPdf);
+        } catch (IOException e) {
+        }
         punishmentReport.setReportUrl(urlOfPdf);
         int row = punishmentReportService.create(punishmentReport);
-
         if (row < 1) {
             return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
         }

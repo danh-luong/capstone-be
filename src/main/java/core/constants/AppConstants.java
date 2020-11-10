@@ -17,5 +17,8 @@ public class AppConstants {
     public static final String PASSWORD = "Chien000";
     public static final String SUBJECT = "Verify account";
     public static final String HOST = "http://localhost:8080/confirm";
+    public static final String PROJECT_ID = "capstone-dtv";
+    public static final String BUCKET_NAME = "capstone-dtv.appspot.com";
+//    public static final String DATABASE_URL = "https://capstone-dtv.firebaseio.com";
 //    public static final int DEFAULT_ROLE_ID = 2;//is moderator role
 }
