@@ -84,4 +84,13 @@ public interface CameraRepository extends JpaRepository<Camera, Integer>, Paging
             " where camera_id = :id",
             nativeQuery = true)
     Camera getById(@Param("id") int id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update cameras" +
+            " set status = :status" +
+            " where camera_id = :cameraId",
+            nativeQuery = true)
+    int updateStatus(@Param("cameraId") int cameraId,
+                     @Param("status") String status);
 }
