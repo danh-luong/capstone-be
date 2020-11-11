@@ -210,12 +210,15 @@ public class CaseController {
     }
 
     @PostMapping(value = "/update")
-    public ResponseEntity update(@RequestParam(name = "caseId") int caseId,
+    public CaseDTO update(@RequestParam(name = "caseId") int caseId,
                                  @RequestParam(name = "licensePlate") String licensePlate) {
         int row = unconfirmedCaseService.update(caseId, licensePlate);
-        if (row < 1) {
-            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+        if (row == 1) {
+            Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseService.getById(caseId);
+            CaseDTO caseDTO = (CaseDTO) objectMapper.convertToDTO(unconfirmedCase.get(), CaseDTO.class);
+            caseDTO.setCaseType("unconfirmed");
+            return caseDTO;
         }
-        return new ResponseEntity("200", HttpStatus.OK);
+        return null;
     }
 }
