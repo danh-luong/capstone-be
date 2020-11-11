@@ -98,4 +98,10 @@ public class CameraServiceImp implements CameraService {
         return camera;
     }
 
+    @Override
+    public int updateStatus(int cameraId, String status) {
+        int row = cameraRepository.updateStatus(cameraId, status);
+        return row;
+    }
+
 }

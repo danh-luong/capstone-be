@@ -221,4 +221,14 @@ public class CameraController {
         return cameraDTO;
     }
 
+
+    @PostMapping(value = "/updateStatus")
+    public ResponseEntity updateStatus(@RequestParam(name = "cameraId") int cameraId,
+                                       @RequestParam(name = "status") String status) {
+        int row = cameraService.updateStatus(cameraId, status);
+        if (row < 1) {
+            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("200", HttpStatus.OK);
+    }
 }

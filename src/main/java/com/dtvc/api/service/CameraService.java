@@ -29,4 +29,6 @@ public interface CameraService {
 
     Camera getById(int id);
 
+    int updateStatus(int cameraId, String status);
+
 }
