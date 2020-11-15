@@ -3,9 +3,13 @@ package com.dtvc.api.controller;
 import com.dtvc.api.service.CameraService;
 import com.dtvc.api.service.GroupCameraService;
 import com.dtvc.api.service.LineService;
+import com.dtvc.api.service.MatService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import core.constants.AppConstants;
 import core.domain.Camera;
 import core.domain.GroupCamera;
@@ -13,6 +17,9 @@ import core.domain.Line;
 import core.dto.CameraDTO;
 import core.dto.LineDTO;
 import core.dto.LocationDTO;
+import org.opencv.core.Mat;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -22,10 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/camera")
@@ -230,5 +234,39 @@ public class CameraController {
             return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity("200", HttpStatus.OK);
+    }
+
+    static {
+        String path = null;
+        try {
+            //I have copied dlls from opencv folder to my project folder
+            path = "D:\\FPT_Semester\\Capstone_Project\\new_backend\\api";
+            System.load(path + "\\opencv_java430.dll");
+            System.load(path + "\\opencv_videoio_ffmpeg430_64.dll");
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Error loading libs");
+        }
+    }
+
+    @PostMapping("/getImageFromCamera")
+    public Map<String, String> getFrameOfCamera(@RequestBody String cameraUrl) {
+        JsonObject data = new Gson().fromJson(cameraUrl, JsonObject.class);
+        String cameraUrlValue = data.get("cameraUrl").getAsString();
+
+        Map<String, String> imageUrl = new HashMap<>();
+        VideoCapture camera = new VideoCapture();
+        camera.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
+        camera.set(Videoio.CAP_PROP_FRAME_HEIGHT, 480);
+        camera.open(cameraUrlValue);
+
+        if (camera.isOpened()) {
+            Mat mat = new Mat();
+            byte[] imgBytes = MatService.matToStream(mat);
+            String imgBase64 = Base64.getEncoder().encodeToString(imgBytes);
+            imageUrl.put("frame", imgBase64);
+        } else {
+            imageUrl.put("frame", "error");
+        }
+        return imageUrl;
     }
 }
