@@ -4,6 +4,7 @@ import com.dtvc.api.service.EmailService;
 import com.dtvc.api.service.UserService;
 import core.constants.AppConstants;
 import core.domain.User;
+import core.util.SHA256;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,9 +68,14 @@ public class UserController {
     public ResponseEntity updatePassword(@RequestParam(value = "username") String username,
                                          @RequestParam(value = "oldPassword") String oldPassword,
                                          @RequestParam(value = "newPassword") String newPassword) {
-        int row = userService.updatePassword(username, oldPassword, newPassword);
-        if (row < 1) {
-            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+        try {
+            oldPassword = SHA256.encrypt(oldPassword);
+            newPassword = SHA256.encrypt(newPassword);
+            int row = userService.updatePassword(username, oldPassword, newPassword);
+            if (row < 1) {
+                return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+            }
+        } catch (NoSuchAlgorithmException e) {
         }
         return new ResponseEntity("200", HttpStatus.OK);
     }
@@ -88,9 +95,13 @@ public class UserController {
                                   @RequestParam(value = "password") String password,
                                   @RequestParam(value = "token") String token,
                                   @RequestParam(value = "status") String status) {
-        int row = userService.confirm(username, token, password, status);
-        if (row < 1) {
-            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+        try {
+            password = SHA256.encrypt(password);
+            int row = userService.confirm(username, token, password, status);
+            if (row < 1) {
+                return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
+            }
+        } catch (NoSuchAlgorithmException e) {
         }
         return new ResponseEntity("200", HttpStatus.OK);
     }

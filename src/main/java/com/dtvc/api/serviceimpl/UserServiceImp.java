@@ -75,4 +75,10 @@ public class UserServiceImp implements UserService {
         return list;
     }
 
+    @Override
+    public Optional<User> checkLogin(User user, String status) {
+        Optional<User> entity = userRepository.checkLogin(user.getUsername(), user.getPassword(), status);
+        return entity;
+    }
+
 }

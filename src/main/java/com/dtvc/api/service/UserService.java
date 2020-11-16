@@ -23,4 +23,6 @@ public interface UserService {
     Optional<List<User>> filterByStatus(String status, Pageable pageable);
 
     Optional<List<User>> filterByStatusAndName(String status, String name, Pageable pageable);
+
+    Optional<User> checkLogin(User user, String status);
 }
