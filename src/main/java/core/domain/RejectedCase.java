@@ -12,7 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "rejected_cases")

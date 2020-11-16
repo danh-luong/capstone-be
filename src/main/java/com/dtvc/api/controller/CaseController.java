@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -206,12 +206,15 @@ public class CaseController {
                 caseDTO = (CaseDTO) objectMapper.convertToDTO(punishmentReport.get(), CaseDTO.class);
             }
         }
+        if (caseDTO != null) {
+            caseDTO.setCaseType(caseType);
+        }
         return caseDTO;
     }
 
     @PostMapping(value = "/update")
     public CaseDTO update(@RequestParam(name = "caseId") int caseId,
-                                 @RequestParam(name = "licensePlate") String licensePlate) {
+                          @RequestParam(name = "licensePlate") String licensePlate) {
         int row = unconfirmedCaseService.update(caseId, licensePlate);
         if (row == 1) {
             Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseService.getById(caseId);

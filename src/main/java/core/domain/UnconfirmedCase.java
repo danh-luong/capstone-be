@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "unconfirmed_cases")
