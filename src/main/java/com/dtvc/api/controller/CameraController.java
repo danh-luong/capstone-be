@@ -260,10 +260,12 @@ public class CameraController {
         camera.open(cameraUrlValue);
 
         if (camera.isOpened()) {
-            Mat mat = new Mat();
-            byte[] imgBytes = MatService.matToStream(mat);
-            String imgBase64 = Base64.getEncoder().encodeToString(imgBytes);
-            imageUrl.put("frame", imgBase64);
+            Mat frame = new Mat();
+            if (camera.read(frame)) {
+                byte[] imgBytes = MatService.matToStream(frame);
+                String imgBase64 = Base64.getEncoder().encodeToString(imgBytes);
+                imageUrl.put("frame", imgBase64);
+            }
         } else {
             imageUrl.put("frame", "error");
         }
