@@ -53,4 +53,16 @@ public class PunishmentReportServiceImp implements PunishmentReportService {
         Optional<PunishmentReport> punishmentReport = punishmentReportRepository.findById(caseId);
         return punishmentReport;
     }
+
+    @Override
+    public List<String> getLicense(Date date) {
+        List<String> list = punishmentReportRepository.getLicense(date);
+        return list;
+    }
+
+    @Override
+    public Optional<Integer> checkLicense(String license, String location, Date current, int violationId) {
+        Optional<Integer> caseId = punishmentReportRepository.checkLicense(license, location, current, violationId);
+        return caseId;
+    }
 }

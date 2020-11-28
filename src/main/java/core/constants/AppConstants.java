@@ -8,6 +8,8 @@ public class AppConstants {
     public static final int DEFAULT_VIOLATION_TYPE = -1; // is all violation types
     public static final int DEFAULT_PAGE_SIZE = 20;
     public static final int MAX_GROUP_SIZE = 2;
+    public static final long DEFAULT_SUGGESTION_TIME = 30000; // 30 seconds
+    public static final long DEFAULT_APPROVE_TIME = 1800000; // 30 minutes
     public static final String DEFAULT_STATUS = "all";
     public static final String ACTIVE_STATUS = "active";
     public static final String NOT_TRAINED_STATUS = "inactive";

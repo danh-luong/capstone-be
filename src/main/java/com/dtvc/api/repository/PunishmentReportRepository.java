@@ -61,4 +61,22 @@ public interface PunishmentReportRepository extends JpaRepository<PunishmentRepo
     Optional<List<PunishmentReport>> filterByDate(@Param("fromDate") Date fromDate,
                                                   @Param("toDate") Date toDate,
                                                   Pageable pageable);
+
+    @Query(value = "select distinct license_plate" +
+            " from punishment_reports" +
+            " where created_date >= :date",
+            nativeQuery = true)
+    List<String> getLicense(@Param("date") Date date);
+
+    @Query(value = " select case_id" +
+            " from punishment_reports" +
+            " where license_plate = :license" +
+            " and location = :location" +
+            " and created_date >= :current" +
+            " and violation_id = :violationId",
+            nativeQuery = true)
+    Optional<Integer> checkLicense(@Param("license") String license,
+                                   @Param("location") String location,
+                                   @Param("current") Date current,
+                                   @Param("violationId") int violationId);
 }

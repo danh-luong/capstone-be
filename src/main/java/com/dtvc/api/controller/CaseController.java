@@ -67,7 +67,7 @@ public class CaseController {
                                 @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE + "") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("created_date").descending());
         List<CaseDTO> list = null;
-        java.util.Date today = new java.util.Date(System.currentTimeMillis());
+        Date today = new java.util.Date(System.currentTimeMillis());
         Date fromDate = new Date(today.getTime());
         Date toDate = fromDate;
         try {
@@ -141,6 +141,8 @@ public class CaseController {
         CaseDTO caseDTO = (CaseDTO) objectMapper.convertToDTO(unconfirmedCase.get(), CaseDTO.class);
         RejectedCase rejectedCase = (RejectedCase) objectMapper.convertToEntity(caseDTO, RejectedCase.class);
         unconfirmedCaseService.delete(caseId);
+        Date current = new Date(System.currentTimeMillis());
+        rejectedCase.setCreatedDate(current);
         rejectedCase.setTrainedStatus(AppConstants.NOT_TRAINED_STATUS);
         int row = rejectedCaseService.create(rejectedCase);
         if (row < 1) {
@@ -152,23 +154,32 @@ public class CaseController {
     @PostMapping(value = "/approve")
     public ResponseEntity approve(@RequestParam(name = "caseId") int caseId) {
         Optional<UnconfirmedCase> unconfirmedCase = unconfirmedCaseService.getById(caseId);
-        CaseDTO caseDTO = (CaseDTO) objectMapper.convertToDTO(unconfirmedCase.get(), CaseDTO.class);
-        PunishmentReport punishmentReport = (PunishmentReport) objectMapper.convertToEntity(caseDTO, PunishmentReport.class);
-        unconfirmedCaseService.delete(caseId);
-        punishmentReport.setTrainedStatus(AppConstants.NOT_TRAINED_STATUS);
-        String urlOfPdf = pdfGenerator.generatePdf(punishmentReport);
-        String firebaseName = "violationid:" + punishmentReport.getCaseId() + ".pdf";
-        try {
-            urlOfPdf = firebaseService.uploadObject(AppConstants.PROJECT_ID, AppConstants.BUCKET_NAME,
-                    "reports/" + firebaseName, urlOfPdf);
-        } catch (IOException e) {
+        if (unconfirmedCase.isPresent()) {
+            UnconfirmedCase uc = unconfirmedCase.get();
+            Optional<Integer> punishmentId = punishmentReportService.checkLicense(uc.getLicensePlate(), uc.getLocation(),
+                    new Date(uc.getCreatedDate().getTime() - AppConstants.DEFAULT_APPROVE_TIME), uc.getViolationType().getViolationId());
+            if (!punishmentId.isPresent()) {
+                CaseDTO caseDTO = (CaseDTO) objectMapper.convertToDTO(uc, CaseDTO.class);
+                PunishmentReport punishmentReport = (PunishmentReport) objectMapper.convertToEntity(caseDTO, PunishmentReport.class);
+                unconfirmedCaseService.delete(caseId);
+                punishmentReport.setTrainedStatus(AppConstants.NOT_TRAINED_STATUS);
+                Date current = new Date(System.currentTimeMillis());
+                punishmentReport.setCreatedDate(current);
+                String urlOfPdf = pdfGenerator.generatePdf(punishmentReport);
+                String firebaseName = "violationid:" + punishmentReport.getCaseId() + ".pdf";
+                try {
+                    urlOfPdf = firebaseService.uploadObject(AppConstants.PROJECT_ID, AppConstants.BUCKET_NAME,
+                            "reports/" + firebaseName, urlOfPdf);
+                } catch (IOException e) {
+                }
+                punishmentReport.setReportUrl(urlOfPdf);
+                int row = punishmentReportService.create(punishmentReport);
+                if (row > 0) {
+                    return new ResponseEntity("200", HttpStatus.OK);
+                }
+            }
         }
-        punishmentReport.setReportUrl(urlOfPdf);
-        int row = punishmentReportService.create(punishmentReport);
-        if (row < 1) {
-            return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity("200", HttpStatus.OK);
+        return new ResponseEntity("400", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/getCountOfStatus")
@@ -223,5 +234,12 @@ public class CaseController {
             return caseDTO;
         }
         return null;
+    }
+
+    @GetMapping(value = "/getLicense")
+    public List<String> getLicense() {
+        Date currentTime = new Date(System.currentTimeMillis() - AppConstants.DEFAULT_SUGGESTION_TIME);
+        List<String> list = punishmentReportService.getLicense(currentTime);
+        return list;
     }
 }

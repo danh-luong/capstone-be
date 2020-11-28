@@ -18,4 +18,8 @@ public interface PunishmentReportService {
     int getCountOfStatus(String status, int violationId);
 
     Optional<PunishmentReport> getById(int caseId);
+
+    List<String> getLicense(Date date);
+
+    Optional<Integer> checkLicense(String license, String location, Date current, int violationId);
 }
