@@ -27,11 +27,11 @@ public class PdfGenerator {
             PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pdfName));
             document.open();
 
-            Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 25, Font.BOLD, BaseColor.BLACK);
+            BaseFont titleFont = BaseFont.createFont(new FileSystemResource("").getFile().getAbsolutePath() + "\\src\\main\\resources\\OpenSans-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Paragraph title = new Paragraph();
-            title.setFont(titleFont);
-            title.add("Punishment Report");
+            title.setFont(new Font(titleFont, 20));
+            title.add("BIÊN BẢN VI PHẠM HÀNH CHÍNH");
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
@@ -39,9 +39,9 @@ public class PdfGenerator {
 
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             StringBuilder headContent = new StringBuilder();
-            headContent.append("Violation Date: " + df.format(punishmentReport.getCreatedDate()) + "\n");
-            headContent.append("Location: " + punishmentReport.getLocation() + "\n");
-            headContent.append("License Plate:" + punishmentReport.getLicensePlate() + "\n");
+            headContent.append("Thời gian vi phạm: " + df.format(punishmentReport.getCreatedDate()) + "\n");
+            headContent.append("Địa điểm: " + punishmentReport.getLocation() + "\n");
+            headContent.append("Biển số xe:" + punishmentReport.getLicensePlate() + "\n");
             Chunk headChunk = new Chunk(headContent.toString(), new Font(bf, 14));
             Paragraph headParagraph = new Paragraph();
             headParagraph.add(headChunk);
@@ -55,7 +55,7 @@ public class PdfGenerator {
             document.add(image);
 
             StringBuilder violationTypeString = new StringBuilder();
-            violationTypeString.append("Violation Type: ");
+            violationTypeString.append("Loại vi phạm: ");
             Chunk violationTitle = new Chunk(violationTypeString.toString(), new Font(bf, 13));
 
             BaseFont typeOfViolation = BaseFont.createFont(new FileSystemResource("").getFile().getAbsolutePath() + "\\src\\main\\resources\\OpenSans-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
