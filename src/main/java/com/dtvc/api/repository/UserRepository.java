@@ -104,4 +104,11 @@ public interface UserRepository extends JpaRepository<User, String>, PagingAndSo
     Optional<User> checkLogin(@Param("username") String username,
                               @Param("password") String password,
                               @Param("status") String status);
+
+    @Query(value = "select username" +
+            " from users" +
+            " where username = :username and password = :password",
+            nativeQuery = true)
+    Optional<String> checkOldPassword(@Param("username") String username,
+                                      @Param("password") String password);
 }

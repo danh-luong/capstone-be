@@ -38,4 +38,14 @@ public class GroupCameraServiceImp implements GroupCameraService {
         Optional<List<GroupCamera>> list = groupCameraRepository.searchByName(count, name);
         return list;
     }
+
+    @Override
+    public boolean checkGroup(String name) {
+        Optional<Integer> id = groupCameraRepository.checkGroup(name);
+        boolean isExisted = false;
+        if (id.isPresent()) {
+            isExisted = true;
+        }
+        return isExisted;
+    }
 }

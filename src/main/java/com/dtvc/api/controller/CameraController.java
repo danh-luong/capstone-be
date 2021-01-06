@@ -271,4 +271,10 @@ public class CameraController {
         }
         return imageUrl;
     }
+
+    @GetMapping(value = "/checkGroup")
+    public boolean checkGroup(@RequestParam(value = "name", defaultValue = "") String name) {
+        boolean isExisted = groupCameraService.checkGroup(name);
+        return isExisted;
+    }
 }

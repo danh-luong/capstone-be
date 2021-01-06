@@ -124,4 +124,16 @@ public class UserController {
         Optional<List<User>> list = userService.filterByStatusAndName(status, fullname, pageable);
         return list;
     }
+
+    @GetMapping(value = "/checkOldPassword")
+    public boolean checkOldPassword(@RequestParam(value = "username") String username,
+                                    @RequestParam(value = "password", defaultValue = "") String password) {
+        try {
+            password = SHA256.encrypt(password);
+        } catch (NoSuchAlgorithmException e) {
+            return false;
+        }
+        boolean isMatched = userService.checkOldPassword(username, password);
+        return isMatched;
+    }
 }

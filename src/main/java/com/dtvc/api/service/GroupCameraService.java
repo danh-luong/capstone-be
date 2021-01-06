@@ -14,4 +14,6 @@ public interface GroupCameraService {
     GroupCamera create(GroupCamera groupCamera);
 
     Optional<List<GroupCamera>> searchByName(int count, String name);
+
+    boolean checkGroup(String name);
 }

@@ -81,4 +81,14 @@ public class UserServiceImp implements UserService {
         return entity;
     }
 
+    @Override
+    public boolean checkOldPassword(String username, String password) {
+        Optional<String> email = userRepository.checkOldPassword(username, password);
+        boolean isMatched = false;
+        if (email.isPresent()) {
+            isMatched = true;
+        }
+        return isMatched;
+    }
+
 }

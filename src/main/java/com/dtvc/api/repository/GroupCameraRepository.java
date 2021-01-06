@@ -33,4 +33,10 @@ public interface GroupCameraRepository extends JpaRepository<GroupCamera, Intege
             nativeQuery = true)
     Optional<List<GroupCamera>> searchByName(@Param("count") int count,
                                              @Param("name") String name);
+
+    @Query(value = "select group_id" +
+            " from group_cameras" +
+            " where group_name = :name",
+            nativeQuery = true)
+    Optional<Integer> checkGroup(@Param("name") String name);
 }
